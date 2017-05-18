@@ -4,6 +4,8 @@ package com.codecool.shop.dao.implementation;
 import com.codecool.shop.dao.JDBC;
 import com.codecool.shop.dao.ProductCategoryDao;
 import com.codecool.shop.model.ProductCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductCategoryDaoJDBC extends JDBC implements ProductCategoryDao {
+    private static final Logger logger = LoggerFactory.getLogger(ProductCategoryDaoJDBC.class);;
     private static ProductCategoryDaoJDBC instance = null;
 
     private ProductCategoryDaoJDBC() {
@@ -31,7 +34,6 @@ public class ProductCategoryDaoJDBC extends JDBC implements ProductCategoryDao {
                 resultSet.getString("category_name"),
                 resultSet.getString("department"),
                 resultSet.getString("category_description"));
-
         return category;
     }
 
@@ -41,6 +43,7 @@ public class ProductCategoryDaoJDBC extends JDBC implements ProductCategoryDao {
         String query = "INSERT INTO categories (category_id,category_name,department,category_description)" +
                 "VALUES ('" + category.getId() + "','" + category.getName() + "','" + category.getDepartment() +
                 "','" + category.getDescription() + "');";
+        logger.debug("Product category added to database: {}", category);
         executeQuery(query);
 
     }
@@ -59,7 +62,7 @@ public class ProductCategoryDaoJDBC extends JDBC implements ProductCategoryDao {
 
 
             if (resultSet.next()) {
-
+                logger.debug("query: {}",query);
                 return productCategorySetup(resultSet);
 
             } else {
@@ -80,6 +83,7 @@ public class ProductCategoryDaoJDBC extends JDBC implements ProductCategoryDao {
             throw new IllegalArgumentException("Id cannot be smaller than 1");
         }
         String query = "DELETE FROM categories WHERE category_id = '" + id + "';";
+        logger.warn("Category removed from databse: {}", find(id));
         executeQuery(query);
     }
 
@@ -101,7 +105,7 @@ public class ProductCategoryDaoJDBC extends JDBC implements ProductCategoryDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        logger.debug("productcategories: {}", productCategoriesFromDB);
         return productCategoriesFromDB;
     }
 }

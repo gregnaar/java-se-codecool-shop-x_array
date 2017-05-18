@@ -1,6 +1,9 @@
 package com.codecool.shop.dao;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,9 +14,10 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public abstract class JDBC {
-
+    private static final Logger logger = LoggerFactory.getLogger(JDBC.class);
 
     protected Connection getConnection() throws SQLException {
+        logger.debug("Connecting to database: jdbc:postgresql://{}/{}",read(1),read(2));
         return DriverManager.getConnection(
                 "jdbc:postgresql://" + read(1) + "/" + read(2) + "",
                 read(3),

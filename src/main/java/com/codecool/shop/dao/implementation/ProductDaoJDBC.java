@@ -5,6 +5,8 @@ import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.model.Product;
 import com.codecool.shop.model.ProductCategory;
 import com.codecool.shop.model.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,6 +17,8 @@ import java.util.List;
 
 public class ProductDaoJDBC extends JDBC implements ProductDao {
     private static ProductDaoJDBC instance = null;
+    private static final Logger logger = LoggerFactory.getLogger(ProductDaoJDBC.class);;
+
 
     private ProductDaoJDBC() {
     }
@@ -68,6 +72,7 @@ public class ProductDaoJDBC extends JDBC implements ProductDao {
                 + "VALUES ('" + product.getId() + "', '" + product.getName() + "', '" + product.getDefaultPrice() + "', " +
                 "'" + product.getDefaultCurrency() + "', '" + product.getDescription() + "', '" + product.getProductCategory().getId() + "'" +
                 ", '" + product.getSupplier().getId() + "');";
+        logger.debug("Product added to database: {}", product);
         executeQuery(query);
     }
 
@@ -111,6 +116,7 @@ public class ProductDaoJDBC extends JDBC implements ProductDao {
         }
 
         String query = "DELETE FROM products WHERE product_id = '" + id + "';";
+        logger.debug("Product removed from database: {}", find(id));
         executeQuery(query);
     }
 

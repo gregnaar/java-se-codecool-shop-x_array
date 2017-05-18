@@ -35,6 +35,8 @@ public class Product extends BaseModel {
         this.description = description;
     }
 
+    public String getName() {return this.name;}
+
     public float getDefaultPrice() {
         return defaultPrice;
     }

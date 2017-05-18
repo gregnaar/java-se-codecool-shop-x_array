@@ -4,6 +4,8 @@ package com.codecool.shop.dao.implementation;
 import com.codecool.shop.dao.JDBC;
 import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.model.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -13,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SupplierDaoJDBC extends JDBC implements SupplierDao {
+    private static final Logger logger = LoggerFactory.getLogger(SupplierDaoJDBC.class);
+
     private static SupplierDaoJDBC instance = null;
 
     private SupplierDaoJDBC() {
@@ -41,6 +45,7 @@ public class SupplierDaoJDBC extends JDBC implements SupplierDao {
         String query = "INSERT INTO suppliers (supplier_id,supplier_name,supplier_description)" +
                 "VALUES ('" + supplier.getId() + "','" + supplier.getName() + "','"
                 + supplier.getDescription() + "');";
+        logger.debug("Supplier named: {} was added to the database",supplier.getName());
         executeQuery(query);
     }
 
@@ -78,6 +83,7 @@ public class SupplierDaoJDBC extends JDBC implements SupplierDao {
         }
 
         String query = "DELETE FROM suppliers WHERE supplier_id = '" + id + "';";
+        logger.warn("Supplier named: {} was removed from the database", find(id));
         executeQuery(query);
     }
 

@@ -5,16 +5,18 @@ import com.codecool.shop.dao.ShoppingCartDao;
 import com.codecool.shop.dao.SupplierDao;
 import com.codecool.shop.dao.implementation.*;
 import com.codecool.shop.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Request;
 import spark.Response;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
-
 import java.io.IOException;
 
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
 
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
 
@@ -28,9 +30,6 @@ public class Main {
         //JDBC data handling
         ProductDao productDataStore = ProductDaoJDBC.getInstance();
         ShoppingCartDaoJDBC shoppingCartDataStore = ShoppingCartDaoJDBC.getInstance();
-        ProductCategory tablet = new ProductCategory(1,"Tablet", "Hardware", "A tablet computer, commonly shortened to tablet, is a thin, flat mobile computer with a touchscreen display.");
-        Supplier amazon = new Supplier(1, "Amazon", "Digital content and services");
-        productDataStore.add(new Product(10,"Amazon Fire 2000", 49.9f, "USD", "Fantastic price. Good parental controls.", tablet, amazon));
 
         // default server settings
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
@@ -64,6 +63,7 @@ public class Main {
 
             Product product = productDataStore.find(Integer.parseInt(req.params(":id")));
             LineItem item = new LineItem(product, 1);
+            logger.debug("Adding product to shopping cart: {}",product);
             shoppingCartDataStore.add(item);
             res.redirect("/");
             return null;
@@ -72,6 +72,7 @@ public class Main {
         get("/cart1/:id", (Request req, Response res) -> {
             LineItem item = shoppingCartDataStore.find(Integer.parseInt(req.params(":id")));
             shoppingCartDataStore.changeAmount(item, 1);
+            logger.debug("Adding +1 to quality of {}",item.getProduct().getName());
             res.redirect("/cart");
             return null;
 
@@ -80,6 +81,7 @@ public class Main {
         get("/cart-1/:id", (Request req, Response res) -> {
             LineItem item = shoppingCartDataStore.find(Integer.parseInt(req.params(":id")));
             shoppingCartDataStore.changeAmount(item, -1);
+            logger.debug("Removing -1 from quality of {}",item.getProduct().getName());
             res.redirect("/cart");
             return null;
         });
@@ -87,6 +89,7 @@ public class Main {
         get("/cart/remove/:id", (Request req, Response res) -> {
             LineItem item = shoppingCartDataStore.find(Integer.parseInt(req.params(":id")));
             shoppingCartDataStore.remove(item);
+            logger.warn("Item removed from shopping cart: {}",item.getProduct().getName());
             item.setQuantity(1);
             res.redirect("/cart");
             return null;

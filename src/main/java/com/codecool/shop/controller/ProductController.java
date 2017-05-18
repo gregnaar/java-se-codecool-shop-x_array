@@ -10,11 +10,13 @@ import com.codecool.shop.model.Supplier;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ProductController {
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     //DAOMEM usage
     //    private static ProductDao productDataStore = ProductDaoMem.getInstance();
@@ -30,7 +32,7 @@ public class ProductController {
 
 
     public static ModelAndView renderProducts(Request req, Response res) {
-
+        logger.debug("Rendering all products");
         Map params = new HashMap<>();
         params.put("categories", productCategoryDataStore.getAll());
         params.put("products", productDataStore.getAll());
@@ -45,6 +47,8 @@ public class ProductController {
                 categoryToFilter = productCategoryDataStore.find(cat.getId());
             }
         }
+        logger.debug("Rendering products, filtered by category {}",categoryToFilter.getName());
+
 
         Map params = new HashMap<>();
         params.put("categories", productCategoryDataStore.getAll());
@@ -60,7 +64,7 @@ public class ProductController {
                 supplierToFilter = supplierDataStore.find(sup.getId());
             }
         }
-
+        logger.debug("Rendering products, filtered by supplier {}",supplierToFilter.getName());
         Map params = new HashMap<>();
         params.put("categories", productCategoryDataStore.getAll());
         params.put("products", productDataStore.getBy(supplierToFilter));
@@ -70,7 +74,7 @@ public class ProductController {
 
 
     public static ModelAndView renderCart(Request req, Response res) {
-
+    logger.debug("Rendering items in shopping cart!");
         Map params = new HashMap<>();
         params.put("cart", shoppingCartDataStore.getAll());
         params.put("TotalPrice", shoppingCartDataStore.getTotal());

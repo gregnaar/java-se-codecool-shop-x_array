@@ -5,6 +5,8 @@ import com.codecool.shop.dao.JDBC;
 import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.ShoppingCartDao;
 import com.codecool.shop.model.LineItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ShoppingCartDaoJDBC extends JDBC implements ShoppingCartDao {
+    private static final Logger logger = LoggerFactory.getLogger(ShoppingCartDaoJDBC.class);
     private static ShoppingCartDaoJDBC instance = null;
 
     private ShoppingCartDaoJDBC() {
@@ -52,6 +55,7 @@ public class ShoppingCartDaoJDBC extends JDBC implements ShoppingCartDao {
                     "UPDATE shoppingcart SET subtotal_price = product_price * quantity WHERE prod_id = '"
                     + item.getProductId() + "';";
         }
+        logger.debug("Product named: {} is added to shopping cart",item.getProduct().getName());
         executeQuery(query);
     }
 
@@ -60,6 +64,7 @@ public class ShoppingCartDaoJDBC extends JDBC implements ShoppingCartDao {
     public void remove(LineItem item) throws NullPointerException {
 
         String query = "DELETE FROM shoppingcart WHERE prod_id = '" + item.getProductId() + "';";
+        logger.warn("Product named: {} was removed from shopping cart",item.getProduct().getName());
         executeQuery(query);
     }
 
