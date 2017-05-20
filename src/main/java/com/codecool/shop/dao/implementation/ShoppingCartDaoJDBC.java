@@ -2,7 +2,6 @@ package com.codecool.shop.dao.implementation;
 
 
 import com.codecool.shop.dao.JDBC;
-import com.codecool.shop.dao.ProductDao;
 import com.codecool.shop.dao.ShoppingCartDao;
 import com.codecool.shop.model.LineItem;
 
@@ -118,12 +117,6 @@ public class ShoppingCartDaoJDBC extends JDBC implements ShoppingCartDao {
 
 
     @Override
-    public LineItem getFirst() {
-        return null;
-    }
-
-
-    @Override
     public String getTotal() {
 
         Float totalPrice;
@@ -151,8 +144,6 @@ public class ShoppingCartDaoJDBC extends JDBC implements ShoppingCartDao {
 
     @Override
     public void changeAmount(LineItem item, int num) {
-
-        ProductDao product = ProductDaoJDBC.getInstance();
 
         if (item.getQuantity() == 1 && num == -1) {
             remove(item);

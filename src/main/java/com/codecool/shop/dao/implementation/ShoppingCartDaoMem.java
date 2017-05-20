@@ -59,9 +59,6 @@ public class ShoppingCartDaoMem implements ShoppingCartDao {
         return DATA;
     }
 
-    @Override
-    public LineItem getFirst() {return DATA.stream().findFirst().orElse(null);}
-
     public String getTotal() {
         LineItem item = DATA.stream().findFirst().orElse(null);
         if (item != null) {

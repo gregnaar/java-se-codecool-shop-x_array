@@ -14,10 +14,27 @@ import java.io.IOException;
 import static spark.Spark.*;
 import static spark.debug.DebugScreen.enableDebugScreen;
 
+/**
+ * <h1>Main class for running the application</h1>
+ * This class handles Spark routes, and generates example data
+ * if the app runs using daoMem data handling.
+ *
+ * @author Majoross Daniel
+ * @author Racz Anna
+ * @author Adam Kovacs
+ * @version 1.0
+ * @since 2017-05-20
+ */
 public class Main {
 
     public static void main(String[] args) throws IOException {
-
+        /**
+         * This is the main method, controlling the application's behaviour.
+         * @param args Unused.
+         * @return Nothing.
+         * @throws IOException on missing elements.
+         * @see IOException
+         */
         //MEM data handling
 //      ProductDao productDataStore = ProductDaoMem.getInstance();
 //      ProductCategoryDao productCategoryDataStore = ProductCategoryDaoMem.getInstance();
@@ -28,9 +45,6 @@ public class Main {
         //JDBC data handling
         ProductDao productDataStore = ProductDaoJDBC.getInstance();
         ShoppingCartDaoJDBC shoppingCartDataStore = ShoppingCartDaoJDBC.getInstance();
-        ProductCategory tablet = new ProductCategory(1,"Tablet", "Hardware", "A tablet computer, commonly shortened to tablet, is a thin, flat mobile computer with a touchscreen display.");
-        Supplier amazon = new Supplier(1, "Amazon", "Digital content and services");
-        productDataStore.add(new Product(10,"Amazon Fire 2000", 49.9f, "USD", "Fantastic price. Good parental controls.", tablet, amazon));
 
         // default server settings
         exception(Exception.class, (e, req, res) -> e.printStackTrace());
@@ -68,7 +82,7 @@ public class Main {
             res.redirect("/");
             return null;
         });
-
+        //adding +1 to product's quantity in shopping cart
         get("/cart1/:id", (Request req, Response res) -> {
             LineItem item = shoppingCartDataStore.find(Integer.parseInt(req.params(":id")));
             shoppingCartDataStore.changeAmount(item, 1);
@@ -76,14 +90,14 @@ public class Main {
             return null;
 
         });
-
+        //subtracting -1 to product's quantity in shopping cart
         get("/cart-1/:id", (Request req, Response res) -> {
             LineItem item = shoppingCartDataStore.find(Integer.parseInt(req.params(":id")));
             shoppingCartDataStore.changeAmount(item, -1);
             res.redirect("/cart");
             return null;
         });
-
+        //removing a product from the shopping cart
         get("/cart/remove/:id", (Request req, Response res) -> {
             LineItem item = shoppingCartDataStore.find(Integer.parseInt(req.params(":id")));
             shoppingCartDataStore.remove(item);
@@ -99,6 +113,10 @@ public class Main {
 
     }
 
+    /**
+     * This method creates example data and framework for DAOMem implementation
+     *
+     */
     public static void populateData() {
 
         ProductDao productDataStore = ProductDaoMem.getInstance();
@@ -135,18 +153,7 @@ public class Main {
         productDataStore.add(new Product("Amazon Fire Phone", 450, "USD", "amazon has its own electronic devices!!!", phone, amazon));
 
         //setting up shopping cart
-        ShoppingCart cart1 = new ShoppingCart();
 
 
     }
-
-    public static void populateDataDatabase() {
-        ProductDao productDataStore = ProductDaoJDBC.getInstance();
-        ProductCategoryDao productCategoryDataStore = ProductCategoryDaoJDBC.getInstance();
-        SupplierDao supplierDataStore = SupplierDaoJDBC.getInstance();
-        ShoppingCartDao shoppingCartDataStore = ShoppingCartDaoJDBC.getInstance();
-
-    }
-
-
 }
